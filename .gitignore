@@ -87,3 +87,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+#MANUALLY ENTERED---------
+web-app/node_modules/

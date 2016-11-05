@@ -5,15 +5,18 @@ block title
 
 block content
   .container-fluid
-    br
     .row
-      .col-xs-12.col-sm-3
-        include links
-      .col-sm-1
-        //offset
-      .col-xs-12.col-sm-4(align='center')
-        block form
-      .col-sm-1
-        //offset
-      .col-xs-12.col-sm-3(align='center')
-        include pic
+      .col-xs-12
+        h1
+          strong Daily Sentiment
+        h3 Thank you for your input!
+        p Right now your input is anonymous but if you'd like to show off your vote on the screen you can upload a picture below, or share your vote on social media.
+        br
+        br
+        br
+        form(action='/upload', enctype='multipart/form-data', method='post')
+          input(name='upload1', type='file')
+          br
+          br
+          br
+          input(type='submit', value='Upload')

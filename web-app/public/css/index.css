@@ -1,7 +1,12 @@
 body {
-  background: white;
+  background: RGB(135, 206, 250);
+  font-family: "Avenir";
 }
 
 a, a:hover {
   color: black;
+}
+
+form {
+    text-align: center;
 }
