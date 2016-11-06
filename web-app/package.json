@@ -12,6 +12,7 @@
     "mongoose": "^4.0.1",
     "mongoose-id-validator": "^0.1.8",
     "mongoose-timestamp": "^0.4.0",
+    "nodemon":"latest",
     "rekuire": "^0.1.9",
     "request": "latest",
     "util":"latest",

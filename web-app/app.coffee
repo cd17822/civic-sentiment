@@ -4,7 +4,6 @@ mongoose = require 'mongoose'
 bodyParser = require 'body-parser'
 rek = require 'rekuire'
 indexRouter = rek 'routes/index'
-userRouter = rek 'routes/user'
 configs = rek 'config'
 server = rek 'components/server'
 
@@ -25,7 +24,6 @@ app.set 'views', 'views'
 
 # configure routes
 app.use '/', indexRouter
-app.use '/users', userRouter
 
 # configure error handling
 app.use (err, req, res, next) ->
