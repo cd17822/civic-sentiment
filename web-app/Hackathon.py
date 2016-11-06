@@ -183,7 +183,7 @@ def  writeVote(indexOfVote): # (hill is 1, trump is 2)
 def getNumPics(x): # c for clinton, t for trump
         for file in os.listdir(x+"uploads"):
                 print file
-                if not (file.endswith(".PNG") or file.endswith(".png")):
+                if not (file.endswith(".png")):
                         print file
                         os.remove(x+"uploads/"+file)
                         print "removed"
