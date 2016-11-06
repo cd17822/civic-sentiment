@@ -23,7 +23,7 @@ router.use (req,res,next) ->
 router.get '/', (req, res, next) ->
   choice = req.query.choice
   request
-    url: "https://c92353fc.ngrok.io/#{choice}"
+    url: "https://c20fcb45.ngrok.io/#{choice}"
     method: 'GET'
     json: true
     (error, response, worker) ->
@@ -56,7 +56,7 @@ router.post '/upload', (req, res, next) ->
         process.stdout.on 'data', (data) ->
           new_name = file_name.split('.')[0] + '.png'
           request
-            url: "https://c92353fc.ngrok.io/#{choice}pic?filename=#{new_name}"
+            url: "https://c20fcb45.ngrok.io/#{choice}pic?filename=#{new_name}"
             method: 'GET'
             json: true
             (error, response, worker) ->

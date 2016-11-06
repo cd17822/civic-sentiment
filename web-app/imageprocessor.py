@@ -19,7 +19,7 @@ def main(filename):
             half_the_height + m
         )
     )
-    img.thumbnail((128,128), Image.ANTIALIAS)
+    img.thumbnail((100,100), Image.ANTIALIAS)
     new_name = filename.split('.')[0] + ".png"
     if needs_rotation:
         img = img.rotate(270)

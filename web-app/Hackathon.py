@@ -33,6 +33,12 @@ screen_height = root.winfo_screenheight()
 print("Screen Height:", screen_height)
 screen_width = root.winfo_screenwidth()
 print("Screen Width:", screen_width)
+
+#OVERRIDES
+#screen_width = 1184
+#screen_height = 624
+
+
 canvas = Canvas(root, width = screen_width, height = screen_height, highlightthickness=0)
 canvas.pack()
 
@@ -60,10 +66,10 @@ scroll = PhotoImage(file=scroll_path)
 canvas.create_image(middle_pixel(usa_path)[0], middle_pixel(usa_path)[1],image=usa)
 
 def drawForeground():
-        canvas.create_image(middle_pixel(hillary_path)[0]-150, screen_height - middle_pixel(hillary_path)[1],image=hillary)
-        canvas.create_image((screen_width - middle_pixel(donald_path)[0])+100, screen_height - middle_pixel(donald_path)[1]+250, image=donald)
-        canvas.create_image(130, screen_height-130,image=hillaryqr)
-        canvas.create_image(screen_width-130, screen_height-130, image=donaldqr)
+        canvas.create_image(middle_pixel(hillary_path)[0]-230, screen_height - middle_pixel(hillary_path)[1] + 230,image=hillary)
+        canvas.create_image((screen_width - middle_pixel(donald_path)[0])+200, screen_height - middle_pixel(donald_path)[1]+450, image=donald)
+        canvas.create_image(115, screen_height-115,image=hillaryqr)
+        canvas.create_image(screen_width-115, screen_height-115, image=donaldqr)
         canvas.create_image(screen_width/2, 100, image=scroll)
         canvas.create_text(screen_width/2, 100, text="Pulse Portal", font=("Courier", 30), fill="brown")
 
@@ -196,7 +202,7 @@ def drawClintonPhoto(pic):
         
         clint_pics = getNumPics('c')
         print "rly"
-        canvas.create_image((clint_pics % pic_potential)*128-64, (clint_pics / pic_potential)*128+64, image=pic)
+        canvas.create_image((clint_pics % pic_potential)*100-50, (clint_pics / pic_potential)*100+50, image=pic)
         
 def drawTrumpPhoto(pic):
         voter_pics.append(pic)
@@ -206,7 +212,7 @@ def drawTrumpPhoto(pic):
         
         trump_pics = getNumPics('t')
         print "rly"
-        canvas.create_image(screen_width-(trump_pics % pic_potential)*128+64, (trump_pics / pic_potential)*128+64, image=pic)
+        canvas.create_image(screen_width-(trump_pics % pic_potential)*100+50, (trump_pics / pic_potential)*100+50, image=pic)
 
 @app.route('/trump')
 def trumpx(*args):
@@ -251,6 +257,7 @@ def trumpp(*args):
         return "trumped"
 
 thread.start_new_thread(flaskThread,())
+#OVERRIDES 
 root.attributes("-fullscreen", TRUE)
 root.mainloop()
 
