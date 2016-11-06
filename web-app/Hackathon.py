@@ -18,7 +18,7 @@ def middle_pixel(filename):
 	mid_width = (width / 2)
 	return [mid_width, mid_height]
 
-	 
+
 
 root.title("Donald Trump vs Hillary Clinton")
 root.bind("<F11>", toggle_fullscreen)
@@ -29,7 +29,7 @@ screen_width = root.winfo_screenwidth()
 print("Screen Width:", screen_width)
 canvas = Canvas(root, width = screen_width, height = screen_height)
 canvas.pack()
-usa_path = "public/images/flagbg.png"
+usa_path = "public/images/flagbg.jpg"
 #usa = PhotoImage(file=usa_path)
 #canvas.create_image(middle_pixel(usa_path)[0],middle_pixel(usa_path)[1],image=usa)
 
@@ -48,12 +48,13 @@ donald_path = "public/images/trumpok.png"
 hillary_path = "public/images/hillgood.png"
 
 donald = PhotoImage(file=donald_path)
-#donald = donald.zoom(3,3)
+donald = donald.zoom(3,3)
+donald = donald.subsample(2,2)
 hillary = PhotoImage(file = hillary_path)
 #hillary = hillary.zoom(5,5)
 #hillary = hillary.subsample(2,2)
 canvas.create_image(middle_pixel(hillary_path)[0]-50, screen_height - middle_pixel(hillary_path)[1],image=hillary)
-canvas.create_image(screen_width - middle_pixel(donald_path)[0], screen_height - middle_pixel(donald_path)[1], image=donald)
+canvas.create_image(screen_width - middle_pixel(donald_path)[0] * 1.5, screen_height - middle_pixel(donald_path)[1] *1.5, image=donald)
 
 
 root.attributes("-fullscreen", TRUE)
