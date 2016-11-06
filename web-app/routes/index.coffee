@@ -5,6 +5,7 @@ util = require('util')
 fs = require('fs-extra')
 qt = require('quickthumb')
 spawn = require("child_process").spawn;
+request = require 'request'
 ### FOR AUTHENTICATION
 rek = require 'rekuire'
 configs = rek 'config'
@@ -20,11 +21,20 @@ router.use (req,res,next) ->
 ###
 
 router.get '/', (req, res, next) ->
-  choice = Number req.query.choice
+  choice = req.query.choice
+  request
+    url: "https://c92353fc.ngrok.io/#{choice}"
+    method: 'GET'
+    json: true
+    (error, response, worker) ->
+      if error then console.log Error error
+      else console.log "fireworked"
   res.render 'layout', title: 'Daily Sentiment', choice: choice
 
 router.post '/upload', (req, res, next) ->
   choice = Number req.query.choice
+  candidate = "clinton"
+  if choice == 2 then choice = "trump"
 
   form = new (formidable.IncomingForm)
   form.parse req, (err, fields, files) ->
@@ -43,6 +53,12 @@ router.post '/upload', (req, res, next) ->
       else
         process = spawn('python',["imageprocessor.py", new_location + file_name]);
         process.stdout.on 'data', (data) ->
-          console.log data
+          request
+            url: "https://c92353fc.ngrok.io/#{candidate}pic?filename=#{file_name}"
+            method: 'GET'
+            json: true
+            (error, response, worker) ->
+              if error then console.log Error error
+              else console.log "picked"
 
 module.exports = router
