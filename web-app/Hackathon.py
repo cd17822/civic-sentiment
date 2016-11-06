@@ -48,13 +48,13 @@ donald_path = "public/images/trumpok.png"
 hillary_path = "public/images/hillgood.png"
 
 donald = PhotoImage(file=donald_path)
-donald = donald.zoom(3,3)
-donald = donald.subsample(2,2)
+donald = donald.zoom(5,5)
+donald = donald.subsample(4,4)
 hillary = PhotoImage(file = hillary_path)
 #hillary = hillary.zoom(5,5)
 #hillary = hillary.subsample(2,2)
 canvas.create_image(middle_pixel(hillary_path)[0]-50, screen_height - middle_pixel(hillary_path)[1],image=hillary)
-canvas.create_image(screen_width - middle_pixel(donald_path)[0] * 1.5, screen_height - middle_pixel(donald_path)[1] *1.5, image=donald)
+canvas.create_image((screen_width - middle_pixel(donald_path)[0])*1.25, screen_height - middle_pixel(donald_path)[1] *1.25, image=donald)
 
 
 root.attributes("-fullscreen", TRUE)
