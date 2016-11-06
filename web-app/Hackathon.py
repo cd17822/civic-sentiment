@@ -1,6 +1,8 @@
 from Tkinter import *
 from PIL import ImageTk, Image
+from flask import Flask
 
+app = Flask(__name__)
 root = Tk()
 
 def toggle_fullscreen(event=None):
@@ -11,15 +13,6 @@ def end_fullscreen(event=None):
 	root.attributes("-fullscreen", False)
 	return "break"
 
-def middle_pixel(filename):
-	with Image.open(filename) as im:
-		width, height = im.size
-	mid_height = (height / 2)
-	mid_width = (width / 2)
-	return [mid_width, mid_height]
-
-
-
 root.title("Donald Trump vs Hillary Clinton")
 root.bind("<F11>", toggle_fullscreen)
 root.bind("<Escape>", end_fullscreen)
@@ -29,34 +22,52 @@ screen_width = root.winfo_screenwidth()
 print("Screen Width:", screen_width)
 canvas = Canvas(root, width = screen_width, height = screen_height)
 canvas.pack()
-usa_path = "public/images/flagbg.jpg"
-#usa = PhotoImage(file=usa_path)
-#canvas.create_image(middle_pixel(usa_path)[0],middle_pixel(usa_path)[1],image=usa)
-
-"""TopRight = Canvas(canvas, width = (1/3 * screen_width), height = (1/3 * screen_height)
-TopMiddle = Canvas(canvas, width = (1/3 * screen_width), height = (1/3 * screen_height)
-TopLeft = Canvas(canvas, width = (1/3 * screen_width), height = (1/3 * screen_height)
-TopRight.pack(side = RIGHT)
-TopMiddle.pack(side = RIGHT)
-TopLeft.pack(side = RIGHT)"""
-
-#subsample(self, x = '', y='')
-#Return a new photoimage based on the same image as this widget but use only every Xth or Yth pixel
 
 
-donald_path = "public/images/trumpok.png"
-hillary_path = "public/images/hillgood.png"
-
-donald = PhotoImage(file=donald_path)
-donald = donald.zoom(5,5)
-donald = donald.subsample(4,4)
-hillary = PhotoImage(file = hillary_path)
-#hillary = hillary.zoom(5,5)
-#hillary = hillary.subsample(2,2)
-canvas.create_image(middle_pixel(hillary_path)[0]-50, screen_height - middle_pixel(hillary_path)[1],image=hillary)
-canvas.create_image((screen_width - middle_pixel(donald_path)[0])*1.25, screen_height - middle_pixel(donald_path)[1] *1.25, image=donald)
+TRUMP_UPS = 0
+CLINTON_UPS = 0
 
 
+def middle_pixel(filename):
+	with Image.open(filename) as im:
+		width, height = im.size
+	mid_height = (height / 2)
+	mid_width = (width / 2)
+	return [mid_width, mid_height]
+
+def draw_initial():
+        
+        usa_path = "public/images/flagbg"
+        donald_path = "public/images/trumpgood.png"
+        hillary_path = "public/images/hillgood.png"
+
+        usa = PhotoImage(file=usa_path)
+        donald = PhotoImage(file=donald_path)
+        hillary = PhotoImage(file = hillary_path)
+        
+        canvas.create_image(middle_pixel(usa_path)[0], middle_pixel(usa_path)[1],image=usa)
+        canvas.create_image(middle_pixel(hillary_path)[0]-150, screen_height - middle_pixel(hillary_path)[1],image=hillary)
+        canvas.create_image((screen_width - middle_pixel(donald_path)[0])+100, screen_height - middle_pixel(donald_path)[1]+250, image=donald)
+
+def getVotes():
+        file = open("votes.txt")
+        string = ""
+        for line in file.readlines():
+                string = line
+                break
+        
+        for c in string:
+                if c == '1': CLINTON_UPS += 1
+                if c == '2': TRUMP_UPS   += 1
+
+def draw_slider():
+        total = 0
+        
+
+draw_initial()
+getVotes()
+draw_slider()
+app.run(debug=True, host='0.0.0')
 root.attributes("-fullscreen", TRUE)
 root.mainloop()
 
