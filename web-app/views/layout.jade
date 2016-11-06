@@ -8,13 +8,14 @@ block content
     .row
       .col-xs-12
         h1
-          strong Daily Sentiment
+          strong Pulse Portal
         h3 Thank you for your input!
-        p Right now your input is anonymous but if you'd like to show off your vote on the screen you can upload a picture below, or share your vote on social media.
+        br
+        p Right now your input is anonymous but if you'd like to show off your vote on the portal, you can upload a picture below.
         br
         br
         br
-        form(action='/upload', enctype='multipart/form-data', method='post')
+        form(action='/upload?choice='+choice, enctype='multipart/form-data', method='post')
           input.center-block(name='upload1', type='file')
           br
           br

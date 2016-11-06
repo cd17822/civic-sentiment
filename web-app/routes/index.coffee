@@ -32,9 +32,7 @@ router.get '/', (req, res, next) ->
   res.render 'layout', title: 'Daily Sentiment', choice: choice
 
 router.post '/upload', (req, res, next) ->
-  choice = Number req.query.choice
-  candidate = "clinton"
-  if choice == 2 then choice = "trump"
+  choice = req.query.choice
 
   form = new (formidable.IncomingForm)
   form.parse req, (err, fields, files) ->
@@ -45,16 +43,20 @@ router.post '/upload', (req, res, next) ->
     temp_path = @openedFiles[0].path
     ### The file name of the uploaded file ###
     file_name = @openedFiles[0].name
+    tokens = file_name.split('.')
+    file_name = tokens[0] + String(new Date().getTime()) + '.' + tokens[1]
     ### Location where we want to copy the uploaded file ###
-    new_location = 'uploads/'
+    new_location = choice[0] + 'uploads/'
 
     fs.copy temp_path, new_location + file_name, (err) ->
       if err then console.error err
       else
+        console.log file_name
         process = spawn('python',["imageprocessor.py", new_location + file_name]);
         process.stdout.on 'data', (data) ->
+          new_name = file_name.split('.')[0] + '.png'
           request
-            url: "https://c92353fc.ngrok.io/#{candidate}pic?filename=#{file_name}"
+            url: "https://c92353fc.ngrok.io/#{choice}pic?filename=#{new_name}"
             method: 'GET'
             json: true
             (error, response, worker) ->

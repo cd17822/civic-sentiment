@@ -4,9 +4,19 @@ from flask import Flask, jsonify, request
 import thread
 import random
 import time
+import os
+import glob
 
 app = Flask(__name__)
 root = Tk()
+
+#delete all past uploads
+files = glob.glob('cuploads/*')
+for f in files: os.remove(f)
+files = glob.glob('tuploads/*')
+for f in files: os.remove(f)
+#delete all past votes
+open("votes.txt", "w").close()
 
 def toggle_fullscreen(event=None):
 	root.attributes("-fullscreen", True)
@@ -23,14 +33,8 @@ screen_height = root.winfo_screenheight()
 print("Screen Height:", screen_height)
 screen_width = root.winfo_screenwidth()
 print("Screen Width:", screen_width)
-canvas = Canvas(root, width = screen_width, height = screen_height)
+canvas = Canvas(root, width = screen_width, height = screen_height, highlightthickness=0)
 canvas.pack()
-
-
-TRUMP_UPS = 0
-CLINTON_UPS = 0
-TRUMP_PICS = 0
-CLINTON_PICS = 0
 
 def middle_pixel(filename):
 	with Image.open(filename) as im:
@@ -39,35 +43,82 @@ def middle_pixel(filename):
 	mid_width = (width / 2)
 	return [mid_width, mid_height]
 
-def draw_initial(): pass
 usa_path = "public/images/flagbg"
 donald_path = "public/images/trumpgood.png"
 hillary_path = "public/images/hillgood.png"
 donaldqr_path = "public/images/trumpqr.png"
 clintonqr_path = "public/images/clintonqr.png"
+scroll_path = "public/images/scroll.png"
 
 usa = PhotoImage(file=usa_path)
 donald = PhotoImage(file=donald_path)
-hillary = PhotoImage(file = hillary_path)
+hillary = PhotoImage(file=hillary_path)
 donaldqr = PhotoImage(file=donaldqr_path)
-hillaryqr = PhotoImage(file = hillaryqr_path)
-                                                                                        
+hillaryqr = PhotoImage(file=clintonqr_path)
+scroll = PhotoImage(file=scroll_path)
+
 canvas.create_image(middle_pixel(usa_path)[0], middle_pixel(usa_path)[1],image=usa)
-canvas.create_image(middle_pixel(hillary_path)[0]-150, screen_height - middle_pixel(hillary_path)[1],image=hillary)
-canvas.create_image((screen_width - middle_pixel(donald_path)[0])+100, screen_height - middle_pixel(donald_path)[1]+250, image=donald)
-canvas.create_image(300, screen_height-300,image=hillaryqr)
-canvas.create_image(screen_width-300, screen_height-300, image=donaldqr)
+
+def drawForeground():
+        canvas.create_image(middle_pixel(hillary_path)[0]-150, screen_height - middle_pixel(hillary_path)[1],image=hillary)
+        canvas.create_image((screen_width - middle_pixel(donald_path)[0])+100, screen_height - middle_pixel(donald_path)[1]+250, image=donald)
+        canvas.create_image(130, screen_height-130,image=hillaryqr)
+        canvas.create_image(screen_width-130, screen_height-130, image=donaldqr)
+        canvas.create_image(screen_width/2, 100, image=scroll)
+        canvas.create_text(screen_width/2, 100, text="Pulse Portal", font=("Courier", 30), fill="brown")
 
 def getVotes():
-        file = open("votes.txt")
+        file = open("votes.txt", 'r')
         string = ""
+        clints = 0
+        trumps = 0
         for line in file.readlines():
                 string = line
                 break
         
         for c in string:
-                if c == '1': CLINTON_UPS += 1
-                if c == '2': TRUMP_UPS   += 1
+                if c == '1': clints += 1
+                if c == '2': trumps += 1
+        file.close()
+        return clints, trumps
+
+def drawMeter():
+        clints, trumps = getVotes()
+        total = clints + trumps
+        midw = screen_width/2
+        midh = screen_height/2
+        start = midw - 150
+        end = midw + 150
+        mid_real = start + 150
+        try:
+                mid_real = (clints*1.0 / total)*300 + start
+        except:
+                pass
+        canvas.create_rectangle(start, midh-30, mid_real, midh+30, fill="blue", width=0)
+        if clints > 0 or trumps == 0:
+                canvas.create_oval(midw-180, midh-30, midw-120, midh+30, fill="blue", width=0)
+        else:
+                canvas.create_oval(midw-180, midh-30, midw-120, midh+30, fill="red", width=0)
+        canvas.create_rectangle(mid_real, midh-30, end, midh+30, fill="red", width=0)
+        if trumps > 0 or clints == 0:
+                canvas.create_oval(midw+130, midh-30, midw+180, midh+30, fill="red", width=0)
+        else:
+                canvas.create_oval(midw+130, midh-30, midw+180, midh+30, fill="blue", width=0)
+        clint_pct = "50%"
+        trump_pct = "50%"
+        print "feawfa"
+        print total
+        if total != 0:
+                clint_pct = str(int(round((clints*1.0/total)*100))) + "%"
+                print clint_pct
+                trump_pct = str(int(round((trumps*1.0/total)*100))) + "%"
+                print clint_pct
+        
+        canvas.create_text(midw-140, midh, text=clint_pct, fill="white", font=("Courier", 18))
+        canvas.create_text(midw+140, midh, text=trump_pct, fill="white", font=("Courier", 18))
+
+drawForeground()
+drawMeter()
 
 def draw_slider():
         total = TRUMP_UPS + CLINTON_UPS
@@ -76,35 +127,100 @@ def draw_slider():
 def flaskThread():
         app.run()
 
+fireworkses = []
 def trumpFireworks():
-        r1 = random.randint(50, screen_width/2 -50)
-        r2 = random.randint(50, screen_height-50)
+        r1 = random.randint(200, screen_width/2 -50)
+        r2 = random.randint(50, screen_height/2)
         
-        for i in xrange(25):
+        for i in xrange(10):
                 format = "gif -index " + str(i)
                 fireworks = PhotoImage(file="public/images/fireworks.gif", format=format)        
+                fireworkses.append(fireworks)
                 canvas.create_image(screen_width/2 + r1, r2, image=fireworks)
-                time.sleep(.01)
+                time.sleep(.1)
+                fireworkses.remove(fireworks)
 
 def clintonFireworks():
-        r1 = random.randint(50, screen_width/2 -50)
-        r2 = random.randint(50, screen_height-50)
+        r1 = random.randint(50, screen_width/2 -200)
+        r2 = random.randint(50, screen_height/2)
         
-        for i in xrange(25):
+        for i in xrange(10):
                 format = "gif -index " + str(i)
-                fireworks = PhotoImage(file="public/images/fireworks.gif", format=format)        
+                fireworks = PhotoImage(file="public/images/fireworks.gif", format=format)
+                fireworkses.append(fireworks)
                 canvas.create_image(r1, r2, image=fireworks)
-                time.sleep(.01)
+                time.sleep(.1)
+                fireworkses.remove(fireworks)
+
+def  writeVote(indexOfVote): # (hill is 1, trump is 2)
+        print "lets"
+        file = open("votes.txt", 'r')
+        print "opened"
+        string = ""
+        for line in file.readlines():
+                string = line
+                break
+        clints = 0
+        trumps = 0
+        for c in string:
+                if c == '1':
+                        clints += 1
+                elif c == '2':
+                        trumps += 1
+        file.close()
+        print "read"
+        file = open("votes.txt", 'a')
+        file.write(str(indexOfVote))
+        file.close()
+        print "written"
+        return clints, trumps
+
+def getNumPics(x): # c for clinton, t for trump
+        for file in os.listdir(x+"uploads"):
+                print file
+                if not (file.endswith(".PNG") or file.endswith(".png")):
+                        print file
+                        os.remove(x+"uploads/"+file)
+                        print "removed"
+        print "looped"
+        path, dirs, files = os.walk(x+"uploads").next()
+        print len(files)
+        return len(files)
+
+voter_pics = [] # just so they dont get fucking garbage collected like honestly fuck tkinter
+def drawClintonPhoto(pic):
+        voter_pics.append(pic)
+        print "lolkilme"
+        pic_potential = screen_width/2/128 - 1
+        print "shit"
+        
+        clint_pics = getNumPics('c')
+        print "rly"
+        canvas.create_image((clint_pics % pic_potential)*128-64, (clint_pics / pic_potential)*128+64, image=pic)
+        
+def drawTrumpPhoto(pic):
+        voter_pics.append(pic)
+        print "lolkilme"
+        pic_potential = screen_width/2/128 - 1
+        print "shit"
+        
+        trump_pics = getNumPics('t')
+        print "rly"
+        canvas.create_image(screen_width-(trump_pics % pic_potential)*128+64, (trump_pics / pic_potential)*128+64, image=pic)
 
 @app.route('/trump')
 def trumpx(*args):
-        #TRUMP_UPS += 1
+        clints, trumps = writeVote(2)
         thread.start_new_thread(trumpFireworks, ())
-        
+        drawMeter()
+        return ""
+
 @app.route('/clinton')
 def clintonx(*args):
-        #CLINTON_UPS += 1
-        thread.start_new_thread(clintonFireworks(), ())
+        clints, trumps = writeVote(1)
+        thread.start_new_thread(clintonFireworks, ())
+        drawMeter()
+        return ""
 
 @app.route('/clintonpic')
 def clintonp(*args):
@@ -113,25 +229,29 @@ def clintonp(*args):
         print all_args
         filename = all_args['filename']
         print filename
-        pic = PhotoImage(file="uploads/"+filename)
+        pic = PhotoImage(file="cuploads/"+filename)
         print "gotdamn"
-        pic_potential = screen_width/2/128
-        print "shit"
-        canvas.create_image((CLINTON_PICS % pics_potential)*128, (CLINTON_PICS / pics_potential)*128,
-                            ((CLINTON_PICS % pics_potential)+1)*128, ((CLINTON_PICS / pics_potential)+1)*128)
-        print "um"
-        CLINTON_PICS += 1
-        print "no"
-        canvas.create_image(middle_pixel(hillary_path)[0]-150, screen_height - middle_pixel(hillary_path)[1],image=hillary)
+        drawClintonPhoto(pic)
+        drawForeground()
 
-root.bind("<<TRUMP>>", trumpx)
-root.bind("<<CLINTON>>", clintonx)
+        return "hilled"
 
-draw_initial()
-getVotes()
-#draw_slider()
+@app.route('/trumppic')
+def trumpp(*args):
+        print "tpicccc"
+        all_args = request.args.to_dict()
+        print all_args
+        filename = all_args['filename']
+        print filename
+        pic = PhotoImage(file="tuploads/"+filename)
+        print "gotdamn"
+        drawTrumpPhoto(pic)
+        drawForeground()
+
+        return "trumped"
+
 thread.start_new_thread(flaskThread,())
-#root.attributes("-fullscreen", TRUE)
+root.attributes("-fullscreen", TRUE)
 root.mainloop()
 
 

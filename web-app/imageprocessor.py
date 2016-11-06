@@ -1,7 +1,12 @@
 from PIL import Image
 import sys
+import os
 
 def main(filename):
+    needs_rotation = False
+    if len(filename.split(".jp")) > 1:
+        needs_rotation = True
+
     img = Image.open(filename)
     half_the_width = img.size[0] / 2
     half_the_height = img.size[1] / 2
@@ -15,8 +20,11 @@ def main(filename):
         )
     )
     img.thumbnail((128,128), Image.ANTIALIAS)
-    img.save(filename)
-
+    new_name = filename.split('.')[0] + ".png"
+    if needs_rotation:
+        img = img.rotate(270)
+    img.save(new_name, "PNG")
+    
     print "processed"
     sys.stdout.flush()
 
