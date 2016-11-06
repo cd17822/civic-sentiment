@@ -71,7 +71,6 @@ def drawForeground():
         canvas.create_image(115, screen_height-115,image=hillaryqr)
         canvas.create_image(screen_width-115, screen_height-115, image=donaldqr)
         canvas.create_image(screen_width/2, 100, image=scroll)
-        canvas.create_text(screen_width/2, 100, text="Pulse Portal", font=("Courier", 30), fill="brown")
 
 def getVotes():
         file = open("votes.txt", 'r')
