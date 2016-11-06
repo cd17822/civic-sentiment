@@ -4,6 +4,7 @@ formidable = require('formidable')
 util = require('util')
 fs = require('fs-extra')
 qt = require('quickthumb')
+spawn = require("child_process").spawn;
 ### FOR AUTHENTICATION
 rek = require 'rekuire'
 configs = rek 'config'
@@ -23,17 +24,11 @@ router.get '/', (req, res, next) ->
   res.render 'layout', title: 'Daily Sentiment', choice: choice
 
 router.post '/upload', (req, res, next) ->
-  console.log req.files
-  console.log req.file
-  console.log req.param.photo
-  console.log req.query.photo
   choice = Number req.query.choice
 
   form = new (formidable.IncomingForm)
   form.parse req, (err, fields, files) ->
-    res.writeHead 200, 'content-type': 'text/plain'
-    res.write 'received upload:\n\n'
-    res.end util.inspect fields: fields, files: files
+    res.render 'thankyou', title: 'Daily Sentiment', choice: choice
 
   form.on 'end', (fields, files) ->
     ### Temporary location of our uploaded file ###
@@ -45,6 +40,9 @@ router.post '/upload', (req, res, next) ->
 
     fs.copy temp_path, new_location + file_name, (err) ->
       if err then console.error err
-      res.render 'thankyou', title: 'Daily Sentiment', choice: choice
+      else
+        process = spawn('python',["imageprocessor.py", new_location + file_name]);
+        process.stdout.on 'data', (data) ->
+          console.log data
 
 module.exports = router
