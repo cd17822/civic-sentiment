@@ -18,6 +18,7 @@ def middle_pixel(filename):
 	mid_width = (width / 2)
 	return [mid_width, mid_height]
 
+	 
 
 root.title("Donald Trump vs Hillary Clinton")
 root.bind("<F11>", toggle_fullscreen)
@@ -26,24 +27,34 @@ screen_height = root.winfo_screenheight()
 print("Screen Height:", screen_height)
 screen_width = root.winfo_screenwidth()
 print("Screen Width:", screen_width)
-canvas = Canvas(root, width=screen_width, height=screen_height)
+canvas = Canvas(root, width = screen_width, height = screen_height)
 canvas.pack()
-usa_path = "flagbg.png"
-usa = ImageTk.PhotoImage(file=usa_path)
-canvas.create_image(middle_pixel(usa_path)[0],middle_pixel(usa_path)[1],image=usa)
+usa_path = "public/images/flagbg.png"
+#usa = PhotoImage(file=usa_path)
+#canvas.create_image(middle_pixel(usa_path)[0],middle_pixel(usa_path)[1],image=usa)
 
-donald_path = "trumpok.png"
-hillary_path = "hillgood.png"
+"""TopRight = Canvas(canvas, width = (1/3 * screen_width), height = (1/3 * screen_height)
+TopMiddle = Canvas(canvas, width = (1/3 * screen_width), height = (1/3 * screen_height)
+TopLeft = Canvas(canvas, width = (1/3 * screen_width), height = (1/3 * screen_height)
+TopRight.pack(side = RIGHT)
+TopMiddle.pack(side = RIGHT)
+TopLeft.pack(side = RIGHT)"""
 
-donald = ImageTk.PhotoImage(file=donald_path)
+#subsample(self, x = '', y='')
+#Return a new photoimage based on the same image as this widget but use only every Xth or Yth pixel
+
+
+donald_path = "public/images/trumpok.png"
+hillary_path = "public/images/hillgood.png"
+
+donald = PhotoImage(file=donald_path)
 #donald = donald.zoom(3,3)
-hillary = ImageTk.PhotoImage(Image.open(hillary_path))
+hillary = PhotoImage(file = hillary_path)
 #hillary = hillary.zoom(5,5)
 #hillary = hillary.subsample(2,2)
-#canvas.create_image(middle_pixel(donald_path)[0] * 2, screen_height - middle_pixel(donald_path)[1] * 3,image=donald)
-#canvas.create_image(screen_width - middle_pixel(hillary_path)[0] * 1.5, screen_height - middle_pixel(hillary_path)[1] * 2.5, image=hillary)
-canvas.create_image(0, 0, image=donald)
-canvas.create_image(0,0, image=hillary)
+canvas.create_image(middle_pixel(hillary_path)[0]-50, screen_height - middle_pixel(hillary_path)[1],image=hillary)
+canvas.create_image(screen_width - middle_pixel(donald_path)[0], screen_height - middle_pixel(donald_path)[1], image=donald)
+
 
 root.attributes("-fullscreen", TRUE)
 root.mainloop()
